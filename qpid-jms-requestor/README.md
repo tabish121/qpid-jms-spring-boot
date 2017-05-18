@@ -2,9 +2,9 @@
 
 Simple Request Application used for test the qpid-jms-reply-service
 
-## Building and running the porject
+## Building and running the project
 
-Build the project from the top level dir using 'mvn clean install'
+Build the project from the top level directory using 'mvn clean install'
 
 Setup you environment variables to point to the host and port of the AMQP broker or if you
 don't set them the defaults for host and port are "localhost" and 5672 respectively.
