@@ -86,6 +86,8 @@
     <module>qpid-jms-spring-boot-autoconfigure</module>
     <module>qpid-jms-spring-boot-starter</module>
     <module>qpid-jms-spring-boot-example</module>
+    <module>qpid-jms-reply-service</module>
+    <module>qpid-jms-requestor</module>
   </modules>
 
   <build>
