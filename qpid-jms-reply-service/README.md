@@ -6,7 +6,8 @@ Simple Reply Service using Qpid JMS and Spring Boot.
 
 Build the project from the top level dir using 'mvn clean install'
 
-Setup you environment variables to point to the host and port of the AMQP broker
+Setup you environment variables to point to the host and port of the AMQP broker or if you
+don't set them the defaults for host and port are "localhost" and 5672 respectively.
 
     MESSAGING_SERVICE_HOST = "localhost"
     MESSAGING_SERVICE_PORT = 5672
