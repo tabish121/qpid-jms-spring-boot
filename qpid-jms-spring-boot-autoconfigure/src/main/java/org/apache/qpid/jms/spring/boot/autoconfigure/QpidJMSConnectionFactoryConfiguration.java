@@ -19,25 +19,21 @@ package org.apache.qpid.jms.spring.boot.autoconfigure;
 import javax.jms.ConnectionFactory;
 
 import org.apache.qpid.jms.JmsConnectionFactory;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JndiConnectionFactoryAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 /**
- * Auto Configuration class for Apache Qpid JMS
+ * Class that is responsible for creating and configuration the resulting
+ * Qpid JMS ConnectionFactory instance.
  */
 @Configuration
-@AutoConfigureBefore(JmsAutoConfiguration.class)
-@AutoConfigureAfter({JndiConnectionFactoryAutoConfiguration.class})
-@ConditionalOnClass({ConnectionFactory.class, JmsConnectionFactory.class})
 @ConditionalOnMissingBean(ConnectionFactory.class)
-@EnableConfigurationProperties(QpidJMSProperties.class)
-@Import({QpidJMSConnectionFactoryConfiguration.class})
-public class QpidJMSAutoConfiguration {
+public class QpidJMSConnectionFactoryConfiguration {
+
+    @Bean
+    public JmsConnectionFactory jmsConnectionFactory(QpidJMSProperties properties) {
+        return new QpidJMSConnectionFactoryBuilder(properties)
+            .createConnectionFactory(JmsConnectionFactory.class);
+    }
 }

@@ -27,46 +27,84 @@ public class QpidJMSProperties {
     private String remoteURL;
     private String username;
     private String password;
+    private String clientId;
 
-    /**
-     * @return the remoteURL
-     */
+    private Boolean receiveLocalOnly;
+    private Boolean receiveNoWaitLocalOnly;
+
+    private final DeserializationPolicy deserializationPolicy = new DeserializationPolicy();
+
     public String getRemoteURL() {
         return remoteURL;
     }
 
-    /**
-     * @param remoteURL the remoteHost to set
-     */
     public void setRemoteURL(String remoteURL) {
         this.remoteURL = remoteURL;
     }
 
-    /**
-     * @return the username
-     */
     public String getUsername() {
         return username;
     }
 
-    /**
-     * @param username the username to set
-     */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /**
-     * @return the password
-     */
     public String getPassword() {
         return password;
     }
 
-    /**
-     * @param password the password to set
-     */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public Boolean isReceiveLocalOnly() {
+        return receiveLocalOnly;
+    }
+
+    public void setReceiveLocalOnly(Boolean receiveLocalOnly) {
+        this.receiveLocalOnly = receiveLocalOnly;
+    }
+
+    public Boolean isReceiveNoWaitLocalOnly() {
+        return receiveNoWaitLocalOnly;
+    }
+
+    public void setReceiveNoWaitLocalOnly(Boolean receiveNoWaitLocalOnly) {
+        this.receiveNoWaitLocalOnly = receiveNoWaitLocalOnly;
+    }
+
+    public DeserializationPolicy getDeserializationPolicy() {
+        return deserializationPolicy;
+    }
+
+    public static class DeserializationPolicy {
+
+        private String whiteList;
+        private String blackList;
+
+        public String getWhiteList() {
+            return whiteList;
+        }
+
+        public void setWhiteList(String whiteList) {
+            this.whiteList = whiteList;
+        }
+
+        public String getBlackList() {
+            return blackList;
+        }
+
+        public void setBlackList(String blackList) {
+            this.blackList = blackList;
+        }
     }
 }

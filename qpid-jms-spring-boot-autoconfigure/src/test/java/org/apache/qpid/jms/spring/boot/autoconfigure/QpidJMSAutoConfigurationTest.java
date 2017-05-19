@@ -17,6 +17,10 @@
 package org.apache.qpid.jms.spring.boot.autoconfigure;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import javax.jms.ConnectionFactory;
 
 import org.apache.qpid.jms.JmsConnectionFactory;
 import org.junit.After;
@@ -42,7 +46,25 @@ public class QpidJMSAutoConfigurationTest {
     }
 
     @Test
-    public void customNativeConnectionFactory() {
+    public void testDefaultsToLocalURI() {
+        load(EmptyConfiguration.class);
+
+        JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
+        ConnectionFactory connectionFactory =
+            this.context.getBean(ConnectionFactory.class);
+
+        assertTrue(connectionFactory instanceof JmsConnectionFactory);
+
+        JmsConnectionFactory qpidJmsFactory = (JmsConnectionFactory) connectionFactory;
+
+        assertEquals(jmsTemplate.getConnectionFactory(), connectionFactory);
+        assertEquals("amqp://localhost:5672", qpidJmsFactory.getRemoteURI());
+        assertNull(qpidJmsFactory.getUsername());
+        assertNull(qpidJmsFactory.getPassword());
+    }
+
+    @Test
+    public void testCustomConnectionFactorySettings() {
         load(EmptyConfiguration.class,
              "spring.qpidjms.remoteURL=amqp://127.0.0.1:5672",
              "spring.qpidjms.username=foo",
@@ -58,14 +80,48 @@ public class QpidJMSAutoConfigurationTest {
         assertEquals("bar", connectionFactory.getPassword());
     }
 
+    @Test
+    public void testReceiveLocalOnlyOptionsAppliedFromEnv() {
+        load(EmptyConfiguration.class,
+             "spring.qpidjms.receiveLocalOnly=true",
+             "spring.qpidjms.receiveNoWaitLocalOnly=true");
+
+        JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
+        JmsConnectionFactory connectionFactory =
+            this.context.getBean(JmsConnectionFactory.class);
+
+        assertEquals(jmsTemplate.getConnectionFactory(), connectionFactory);
+
+        assertTrue(connectionFactory.isReceiveLocalOnly());
+        assertTrue(connectionFactory.isReceiveNoWaitLocalOnly());
+    }
+
+    @Test
+    public void testReceiveLocalOnlyOptionsAppliedFromEnvOverridesURI() {
+        load(EmptyConfiguration.class,
+             "spring.qpidjms.remoteURL=amqp://127.0.0.1:5672" +
+                 "?jms.receiveLocalOnly=false&jms.receiveNoWaitLocalOnly=false",
+             "spring.qpidjms.receiveLocalOnly=true",
+             "spring.qpidjms.receiveNoWaitLocalOnly=true");
+
+        JmsTemplate jmsTemplate = this.context.getBean(JmsTemplate.class);
+        JmsConnectionFactory connectionFactory =
+            this.context.getBean(JmsConnectionFactory.class);
+
+        assertEquals(jmsTemplate.getConnectionFactory(), connectionFactory);
+
+        assertTrue(connectionFactory.isReceiveLocalOnly());
+        assertTrue(connectionFactory.isReceiveNoWaitLocalOnly());
+    }
+
     @Configuration
     static class EmptyConfiguration {}
 
     private void load(Class<?> config, String... environment) {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-        EnvironmentTestUtils.addEnvironment(applicationContext, environment);
         applicationContext.register(config);
         applicationContext.register(QpidJMSAutoConfiguration.class, JmsAutoConfiguration.class);
+        EnvironmentTestUtils.addEnvironment(applicationContext, environment);
         applicationContext.refresh();
         this.context = applicationContext;
     }
