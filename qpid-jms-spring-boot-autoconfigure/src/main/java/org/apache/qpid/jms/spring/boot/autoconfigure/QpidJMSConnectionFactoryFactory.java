@@ -26,18 +26,21 @@ import org.springframework.util.StringUtils;
 /**
  * Builder of JmsConnectionFactory instances.
  */
-public class QpidJMSConnectionFactoryBuilder {
+public class QpidJMSConnectionFactoryFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(QpidJMSConnectionFactoryBuilder.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QpidJMSConnectionFactoryFactory.class);
 
     private static final String DEFAULT_REMOTE_URL = "amqp://localhost:5672";
 
     private final QpidJMSProperties properties;
 
     /**
+     * Creates a new QpidJMSConnectionFactoryFactory instance
+     *
      * @param properties
+     *      The QpidJMSProperties to use when building new factories.
      */
-    public QpidJMSConnectionFactoryBuilder(QpidJMSProperties properties) {
+    public QpidJMSConnectionFactoryFactory(QpidJMSProperties properties) {
         Assert.notNull(properties, "Properties must not be null");
         this.properties = properties;
     }
@@ -55,11 +58,7 @@ public class QpidJMSConnectionFactoryBuilder {
         try {
             JmsConnectionFactory factory = new JmsConnectionFactory();
 
-            if (StringUtils.hasLength(properties.getRemoteURL())) {
-                factory.setRemoteURI(properties.getRemoteURL());
-            } else {
-                factory.setRemoteURI(DEFAULT_REMOTE_URL);
-            }
+            factory.setRemoteURI(getRemoteURI());
 
             // Override the URI options with configuration values, but only if
             // the value is actually set.
@@ -91,6 +90,14 @@ public class QpidJMSConnectionFactoryBuilder {
             LOG.error("Exception while createing Qpid JMS Connection Factory.", ex);
             throw new IllegalStateException("Failed to create the Qpid JMS ConnectionFactory, " +
                 "make sure the client Jar is on the Classpath.", ex);
+        }
+    }
+
+    public String getRemoteURI() {
+        if (StringUtils.hasLength(properties.getRemoteURL())) {
+            return properties.getRemoteURL();
+        } else {
+            return DEFAULT_REMOTE_URL;
         }
     }
 
