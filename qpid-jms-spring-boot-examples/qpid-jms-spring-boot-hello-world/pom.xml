@@ -21,14 +21,14 @@
 
   <parent>
     <groupId>org.apache.qpid</groupId>
-    <artifactId>qpid-jms-spring-boot-parent</artifactId>
+    <artifactId>qpid-jms-spring-boot-examples</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>qpid-jms-spring-boot-example</artifactId>
+  <artifactId>qpid-jms-spring-boot-hello-world</artifactId>
   <packaging>jar</packaging>
 
-  <name>QpidJMS Spring Boot Auto Configuration Example</name>
+  <name>QpidJMS Spring Boot Auto Configuration Hello World Example</name>
   <description>Spring Boot Example for QpidJMS</description>
   <url>https://github.com/tabish121/qpid-jms-spring-boot</url>
 
